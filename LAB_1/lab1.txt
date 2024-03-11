@@ -1,0 +1,98 @@
+const int GreenLed = 11;
+const int RedLed = 12;
+const int YellowLed = 13;
+
+bool GreenStatus = false;
+bool RedStatus = false;
+bool YellowStatus = false;
+
+void setup() {
+  // Configurar los pines de las luces como salidas
+  pinMode(GreenLed, OUTPUT);
+  pinMode(RedLed, OUTPUT);
+  pinMode(YellowLed, OUTPUT);
+
+  // Iniciar la comunicación serial
+  Serial.begin(9600);
+  Serial.println("::::::::::::::::::::::::::::::::::::::::::::");
+  Serial.println("Please press a button:");
+  Serial.println("::::::::::::::::::::::::::::::::::::::::::::");
+  Serial.println("1. Turn ON/OFF Green Light");
+  Serial.println("2. Turn ON/OFF Red Light");
+  Serial.println("3. Turn ON/OFF Yellow Light");
+  Serial.println("4. Turn ON all the lights");
+  Serial.println("5. Turn OFF all the lights");
+  Serial.println("6. Flashing mode");
+}
+
+void loop() {
+  // Verificar si hay datos disponibles en el puerto serial
+  if (Serial.available() > 0) {
+    int opt = Serial.read() - '0'; // Leer el número ingresado
+
+    switch (opt) {
+      case 1:
+        GreenStatus = !GreenStatus; // Cambiar el estado de la luz verde
+        digitalWrite(GreenLed, GreenStatus);
+        Serial.print("Green Light");
+        Serial.println(GreenStatus ? "ON" : "OF");
+        break;
+      case 2:
+        RedStatus = !RedStatus; // Cambiar el estado de la luz roja
+        digitalWrite(RedLed, RedStatus);
+        Serial.print("Red Light");
+        Serial.println(RedStatus ? "ON" : "OFF");
+        break;
+      case 3:
+        YellowStatus = !YellowStatus; // Cambiar el estado de la luz amarilla
+        digitalWrite(YellowLed, YellowStatus);
+        Serial.print("Yellow Light");
+        Serial.println(YellowStatus ? "ON" : "OF");
+        break;
+      case 4:
+        digitalWrite(GreenLed, HIGH);
+        digitalWrite(RedLed, HIGH);
+        digitalWrite(YellowLed, HIGH);
+        Serial.println("All the lights are turned ON");
+        break;
+      case 5:
+        digitalWrite(GreenLed, LOW);
+        digitalWrite(RedLed, LOW);
+        digitalWrite(YellowLed, LOW);
+        Serial.println("All the lights are turned OFF");
+        break;
+      case 6:
+        flashingMode();
+        break;
+      default:
+        Serial.println("Wrong Option");
+        break;
+    }
+  }
+}
+
+void flashingMode() {
+  Serial.println("Flashing mode ON");
+  while (true) {
+    digitalWrite(GreenLed, HIGH);
+    digitalWrite(RedLed, LOW);
+    digitalWrite(YellowLed, LOW);
+    delay(500);
+    digitalWrite(GreenLed, LOW);
+    digitalWrite(RedLed, HIGH);
+    digitalWrite(YellowLed, LOW);
+    delay(500);
+    digitalWrite(GreenLed, LOW);
+    digitalWrite(RedLed, LOW);
+    digitalWrite(YellowLed, HIGH);
+    delay(500);
+
+    // Verificar si se ingresa otro número para salir del modo intermitente
+    if (Serial.available() > 0) {
+      int opt = Serial.read() - '0';
+      if (opt != 6) {
+        break;
+      }
+    }
+  }
+}
