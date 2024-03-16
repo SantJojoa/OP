@@ -22,7 +22,7 @@ void setup() {
   Serial.println("3. Turn ON/OFF Yellow Light");
   Serial.println("4. Turn ON all the lights");
   Serial.println("5. Turn OFF all the lights");
-  Serial.println("6. Flashing mode");
+  Serial.println("6. Flahing mode");
 }
 
 void loop() {
@@ -75,18 +75,13 @@ void flashingMode() {
   Serial.println("Flashing mode ON");
   while (true) {
     digitalWrite(GreenLed, HIGH);
-    digitalWrite(RedLed, LOW);
-    digitalWrite(YellowLed, LOW);
-    delay(500);
-    digitalWrite(GreenLed, LOW);
     digitalWrite(RedLed, HIGH);
-    digitalWrite(YellowLed, LOW);
-    delay(500);
-    digitalWrite(GreenLed, LOW);
-    digitalWrite(RedLed, LOW);
     digitalWrite(YellowLed, HIGH);
     delay(500);
-
+    digitalWrite(GreenLed, LOW);
+    digitalWrite(RedLed, LOW);
+    digitalWrite(YellowLed, LOW);
+    delay(500);    
     // Verificar si se ingresa otro número para salir del modo intermitente
     if (Serial.available() > 0) {
       int opt = Serial.read() - '0';
