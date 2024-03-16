@@ -1,0 +1,48 @@
+
+const int tmpSensorPin = A0; // Pin analógico conectado al sensor TMP
+const int ledPin = 13; // Pin del LED
+const int motorPin = 12; // Pin del motor (ventilador)
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(ledPin, OUTPUT);
+  pinMode(motorPin, OUTPUT);
+  Serial.println("Sensor de temperatura y control de rutinas");
+}
+
+void loop() {
+  // Leer el valor del sensor TMP
+  int sensorValue = analogRead(tmpSensorPin);
+
+  // Convertir el valor analógico a temperatura (suponiendo una resolución de 10 mV/°C)
+  float temperature = (sensorValue * (5.0 / 1023.0) - 0.5) * 100; // Temperatura en °C
+
+  // Mostrar la temperatura en el monitor serial
+  Serial.print("Temperatura: ");
+  Serial.print(temperature);
+  Serial.println(" °C");
+
+  // Validaciones según la temperatura
+   temperature = 3;
+  if (temperature < 5) {
+    // Temperatura inferior a 5 °C
+    intermitenciaLED(0.5);
+  } else if (temperature >= 6 && temperature <= 25) {
+    // Temperatura entre 6 °C y 25 °C
+    digitalWrite(ledPin, LOW);
+    digitalWrite(motorPin, LOW);
+  } else {
+    // Temperatura mayor a 25 °C
+    digitalWrite(ledPin, HIGH);
+    digitalWrite(motorPin, HIGH);
+  }
+
+  delay(1000); // Esperar un segundo antes de la próxima lectura
+}
+
+void intermitenciaLED(float retardo) {
+  digitalWrite(ledPin, HIGH);
+  delay(retardo * 1000);
+  digitalWrite(ledPin, LOW);
+  delay(retardo * 1000);
+}
